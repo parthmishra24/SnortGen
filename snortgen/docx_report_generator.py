@@ -56,6 +56,8 @@ def generate_docx_report(vulnerabilities, template_path, output_path):
     doc.add_page_break()
     doc.add_heading("6. Vulnerability Finding Details", level=1)
 
+    total_vulnerabilities = len(vulnerabilities)
+
     for idx, vuln in enumerate(vulnerabilities, start=1):
         doc.add_heading(f"6.{idx} {vuln['name']}", level=2)
 
@@ -84,7 +86,8 @@ def generate_docx_report(vulnerabilities, template_path, output_path):
         else:
             doc.add_paragraph("⚠️ No screenshots provided.")
 
-        doc.add_page_break()
+        if idx < total_vulnerabilities:
+            doc.add_page_break()
 
     # Ask for file name
     filename_input = questionary.text("📄 Enter custom report file name (without extension):", style=custom_style).ask()
