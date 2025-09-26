@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "snortgen"
+version = "0.1.0"
+description = "CLI tool for generating VAPT reports and managing a vulnerability knowledge base."
+readme = "README.md"
+authors = [
+  { name = "Parth Mishra" }
+]
+license = { file = "LICENSE" }
+requires-python = ">=3.8"
+dependencies = [
+  "setuptools>=61",
+  "questionary>=2.0,<3.0",
+  "pyfiglet>=0.8",
+  "colorama>=0.4",
+  "python-docx>=1.1",
+  "importlib-resources>=5.0; python_version < '3.9'"
+]
+
+[project.urls]
+Homepage = "https://github.com/parthmishra24/Report-Generator"
+Source = "https://github.com/parthmishra24/Report-Generator"
+
+[project.scripts]
+snortgen = "snortgen.cli:run"
+snortgen-manage-kb = "snortgen.manage_kb:main"
+
+[tool.setuptools.packages.find]
+include = ["snortgen", "snortgen.*"]
+
+[tool.setuptools.package-data]
+snortgen = ["data/*"]

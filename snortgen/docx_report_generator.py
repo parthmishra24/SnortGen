@@ -1,10 +1,11 @@
-from docx import Document
-from docx.shared import Inches
 import os
 import sys
 import datetime
 import questionary
-from style import custom_style  # ✅ Import your centralized style
+from docx import Document
+from docx.shared import Inches
+
+from .style import custom_style  # ✅ Import your centralized style
 
 def generate_docx_report(vulnerabilities, template_path, output_path):
     try:
