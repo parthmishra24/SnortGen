@@ -19,6 +19,10 @@ def generate_docx_report(vulnerabilities, template_path, output_path):
 
     # Ask for target URL
     target_url = questionary.text("🌐 Enter the target URL:", style=custom_style).ask()
+    if target_url is None:
+        print("\n🛑 Cancelled.")
+        return
+    target_url = (target_url or "").strip()
 
     # Replace placeholders
     for paragraph in doc.paragraphs:
