@@ -1,21 +1,28 @@
-import questionary
+from __future__ import annotations
+
 import json
-import os
 import sys
-from style import custom_style  # ✅ Import centralized style
+from pathlib import Path
+
+import questionary
+
+from .config import ensure_user_data_file
+from .style import custom_style  # ✅ Import centralized style
 
 # Load local vuln knowledge base
-def load_knowledgebase(path='vuln_knowledgebase.json'):
+def load_knowledgebase(path: str | Path | None = None):
+    kb_path = ensure_user_data_file("vuln_knowledgebase.json") if path is None else Path(path)
     try:
-        with open(path, 'r') as file:
+        with kb_path.open('r', encoding='utf-8') as file:
             return json.load(file)
     except Exception as e:
         print(f"❌ Failed to load knowledgebase: {e}")
         return {}
 
-def save_knowledgebase(kb, path='vuln_knowledgebase.json'):
+def save_knowledgebase(kb, path: str | Path | None = None):
+    kb_path = ensure_user_data_file("vuln_knowledgebase.json") if path is None else Path(path)
     try:
-        with open(path, 'w') as file:
+        with kb_path.open('w', encoding='utf-8') as file:
             json.dump(kb, file, indent=2)
         print("✅ Knowledge base updated.")
     except Exception as e:

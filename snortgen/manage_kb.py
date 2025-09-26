@@ -1,22 +1,33 @@
-import json
-import questionary
-import os
-import sys
-from style import custom_style  # ✅ centralized style import
+"""Interactive helper to manage the SnortGen knowledge base."""
 
-KB_PATH = 'vuln_knowledgebase.json'
+from __future__ import annotations
+
+import json
+import sys
+
+import questionary
+
+from .config import ensure_user_data_file
+from .style import custom_style  # ✅ centralized style import
+
+KB_FILENAME = 'vuln_knowledgebase.json'
+
 
 def load_knowledgebase():
-    if not os.path.exists(KB_PATH):
+    kb_path = ensure_user_data_file(KB_FILENAME)
+    if not kb_path.exists():
         print("⚠️ Knowledge base not found. Creating a new one.")
         return {}
-    with open(KB_PATH, 'r') as f:
+    with kb_path.open('r', encoding='utf-8') as f:
         return json.load(f)
 
+
 def save_knowledgebase(kb):
-    with open(KB_PATH, 'w') as f:
+    kb_path = ensure_user_data_file(KB_FILENAME)
+    with kb_path.open('w', encoding='utf-8') as f:
         json.dump(kb, f, indent=2)
     print("✅ Knowledge base saved.")
+
 
 def required_input(prompt):
     while True:
@@ -28,6 +39,7 @@ def required_input(prompt):
             return answer.strip()
         print("❗ This field is required.")
 
+
 def view_entries(kb):
     if not kb:
         print("🚫 Knowledge base is empty.")
@@ -36,6 +48,7 @@ def view_entries(kb):
     for name in kb:
         print(f"- {name}")
     print("")
+
 
 def add_new_entry(kb):
     print("\n➕ Add a New Vulnerability Entry\n")
@@ -56,6 +69,7 @@ def add_new_entry(kb):
         "remediation": remediation
     }
     save_knowledgebase(kb)
+
 
 def edit_entry(kb):
     if not kb:
@@ -88,6 +102,7 @@ def edit_entry(kb):
     }
     save_knowledgebase(kb)
 
+
 def delete_entry(kb):
     if not kb:
         print("🚫 Knowledge base is empty.")
@@ -108,6 +123,7 @@ def delete_entry(kb):
         save_knowledgebase(kb)
     else:
         print("✅ Deletion cancelled.")
+
 
 def search_entries(kb):
     if not kb:
@@ -136,6 +152,7 @@ def search_entries(kb):
             print(f"  - Impact: {entry.get('impact')[:80]}...")
             print(f"  - Remediation: {entry.get('remediation')[:80]}...\n")
 
+
 def quick_search_name(kb):
     if not kb:
         print("🚫 Knowledge base is empty.")
@@ -157,6 +174,7 @@ def quick_search_name(kb):
     print(f"  - Impact: {entry.get('impact')}")
     print(f"  - Remediation: {entry.get('remediation')}\n")
 
+
 def main():
     while True:
         kb = load_knowledgebase()
@@ -174,6 +192,9 @@ def main():
             style=custom_style
         ).ask()
 
+        if action is None:
+            print("🛑 Cancelled.")
+            break
         if "Add a new entry" in action:
             add_new_entry(kb)
         elif "Quick search" in action:
@@ -189,6 +210,7 @@ def main():
         elif "Exit" in action:
             print("👋 Exiting.")
             break
+
 
 if __name__ == "__main__":
     try:
